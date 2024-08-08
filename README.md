@@ -1,16 +1,13 @@
-# Lecture # 2 - Components & Props
+# Lecture # 4 - Information Flow
 
 ## Lecture Topics
-- Review the benefits of React over Vanilla JS
-- Review the difference between HTML and JSX
-- Review the importance of Components
-- Review how a component is written
-- Explain what props are and how to create them
-- Recognize destructured props and how to work with them
-- Recognize best practices when writing components and props
-- Observe how to render multiple components from a list
+
+- Define the term “lifting state”
+- Recognize the pattern for changing state in a parent component from a child component
+- Explain the role that callback functions play in changing parent state
 
 ## Setup
+
 Please make sure that you are inside the folder for this repository which contains the `package.json` file before following these instructions for setup:
 
 1. Run `npm install` in your terminal to install the dependencies from the `package.json` file.
@@ -20,98 +17,106 @@ Please make sure that you are inside the folder for this repository which contai
 
 We've been asked to build a website for a new pet adoption center, Flatapets, that displays a list of pets available for adoption at this pet adoption center.
 
-Today we will learn about Components and Props to help us accomplish some tasks related to displaying data on the website.
+Today we will learn about Information Flow to help us accomplish some tasks related to displaying data on the website.
 
-1. In the `App.js` file, the `App` component currently returns an `<h1>` element with the text "Welcome to React!" Delete this `<h1>` element, and replace it with a `<div>` element with the `className` of "app" so that the `App` component returns this `<div>` element.
-2. Create a new file called `Header.js` inside of the `components` folder. Then, inside of the `Header.js` file, create a `Header` component that will return a `<header>` element that contains the following elements inside it:
-- An `<h1>` element.
-- The `<h1>` element must have the text "Flatapets" inside it, as well as a `<span>` element inside it.
-- The `<span>` element must have the `className` of "logo", and must have the 🐈 emoji inside it.
-3. Export your `Header` component from `Header.js`. Import your `Header` component into `App.js`.
-4. Render the `Header` component inside of the `<div>` element returned from the `App` component.
-5. Create a new file called `PetList.js` inside of the `components` folder. Then, inside of the `PetList.js` file, create a `PetList` component that will return a `<ul>` element with the `className` of "pet-list".
-6. Export your `PetList` component from `PetList.js`. Import your `PetList` component into `App.js`.
-7. Render the `PetList` component inside of the `<div>` element returned from the `App` component. The `PetList` component should be rendered after the `Header` component.
-8. In `App.js`, the `PetList` component should have a prop called `pets`. The value of the `pets` prop should be the value of the `pets` variable declared in the `App` component.
-9. In `PetList.js`, destructure the `pets` prop in the `PetList` component.
-10. In the `PetList` component, use the `.map()` array iterator to iterate over the `pets` array (prop that was passed to the `PetList` component) and create a list of `Pet` components which should be rendered inside of the `<ul>` element in the `PetList` component.
-11. The `Pet` components should have a prop called `pet`. The value of the `pet` prop should be an object from the `pets` array (prop that was passed to the `PetList` component).
-12. Create a `key` prop for the `Pet` components - this is necessary since we are creating a list of `Pet` components. The value of the `key` prop should be the `id` for the pet object.
-13. Create a new file called `Pet.js` inside of the `components` folder. Then, inside of the `Pet.js` file, create a `Pet` component. Destructure the `pet` prop in the `Pet` component. The `Pet` component must return an `<li>` element with the `className` of "pet". This `<li>` element must contain the following elements inside it:
-- An `<img>` element. The `<img>` element's `src` attribute must have the value of the pet's image. The `<img>` element's `alt` attribute must have the value of the pet's name.
-- An `<h4>` element. The pet's name should display inside of this `<h4>` element.
-14. Export your `Pet` component from `Pet.js`. Import your `Pet` component into `PetList.js`.
+1. In the `PetPage` component in `PetPage.js`, declare a function named `updateSearchText` that will have the same functionality as the anonymous callback function in the `onChange` attribute (change event listener) in the `<input>` element returned from the `PetPage` component. `onChange` should have the value of `updateSearchText`, the named function that you just declared.
+2. Create a `Search` component by refactoring the `<div>` element out of the `PetPage` component. Typing into the `<input>` inside of the `Search` component to search for pets should maintain the filter functionality. You will need to pass the `updateSearchText` function that you created in Deliverable # 1 as a prop to the `Search` component to order to maintain the functionality.
+3. In the `PetPage` component in `PetPage.js`, use `useState` to create a stateful variable named `petsState` and a setter function called `setPetsState`. The initial value for the state should be the `pets` variable.
+4. In the `PetPage` component in `PetPage.js`, declare a function named `deletePet` that has one parameter called `id`. The `deletePet` function should remove a pet from the page. To do this, you will need to call the `setPetsState` setter function to update the value of the `petsState` to contain an array that excludes the pet that should be deleted. Hint: You can use the `.filter()` array iterator method to create a new array that does not include the pet that you want to delete. Include only the pets whose id does **not** match the value of the `id` parameter.
+5. Pass the `deletePet` function as a prop to the `PetList` component. Then, in the `PetList` component, pass `deletePet` as a prop to each of the `Pet` components.
+6. In the `Pet` component in `Pet.js`, add an `onClick` attribute (click event listener) to the `<button>` element returned from the `Pet` component. The value of the `onClick` attribute (click event listener) should be a callback function that invokes the `deletePet` function. Pass in the pet's id as an argument into the `deletePet` function.
 
-## Creating a React App
+### Process: Building React Features With State
 
-`create-react-app` will build a project folder for our application and install all the dependencies we need (via Node Package Manager).
+1. Decide: Do we need state for this feature? If so, where?
+2. Set up the initial state. What's a good initial value? What will we see on the page first? How will it change?
+3. Set up component to render something based on state. Do we need conditional rendering?
+4. Find a way to update state dynamically (based on user interaction; fetching data; etc).
 
-To create a new React application and start it, run:
+### Process: Using Inverse Data Flow
 
-```
-npx create-react-app app-name
-cd app-name
-npm start
-```
+1. Define a event handler in the child component
+2. Define a callback function in the parent component
+3. Pass the callback function as a prop to the child
+4. Call the callback in the event handler with whatever data we're sending up
 
-In addition to React, it gives us:
+### Inverse Data Flow
 
-- Webpack: a tool for bundling and minifying our code (along with a server for running our code in development)
-- Babel: a transpiler that lets us write modern JavaScript and JSX
+In React, we only have one way to share information between multiple components:
+`props`. We've seen how to use props to send data from a parent component to a child component, like this:
 
-## Components
+```js
+function Parent() {
+  const [search, setSearch] = useState("");
 
-Components are the building blocks of React. A component is a function that:
+  // passing search down as a prop
+  return <Child search={search} />;
+}
 
-- Takes in some raw data (props)
-- Returns user interface (JSX)
-
-There are some things you'll need to keep in mind:
-
-- The name of your component function must be capitalized.
-- A component can only return one element. That element can have children, like this:
-
-``` javascript
-function Card() {
+function Child({ search }) {
   return (
-    <div id="card1" className="card">
-      <h1>Hello Flatiron!</h1>
-      <p>Greetings!</p>
+    <div>
+      <p>You searched for: {search}</p>
     </div>
   );
 }
 ```
 
-## Props
+It's also helpful to be able to pass data **up** from a child to a parent. In
+React, the only way to achieve this is by sending a **callback function** down
+from the parent to the child via `props`, and **call** that callback function in
+the child to send up data that we need.
 
-When you create components, one way to make them dynamic and reusable is by passing in props. For example, if we wanted to create several cards on our page using a Card component, we could do so like this:
+First, we need to define a callback function in the parent component:
 
-``` javascript
-function Card(props) {
+```js
+function Parent() {
+  const [search, setSearch] = useState("");
+
+  function handleSearchChange(newValue) {
+    // do whatever we want with the data (usually setting state)
+    setSearch(newValue);
+  }
+
+  return <Child search={search} />;
+}
+```
+
+Then, we need to pass a **reference** to the function down as a **prop** to the
+child component:
+
+```js
+function Parent() {
+  const [search, setSearch] = useState("");
+
+  function handleSearchChange(newValue) {
+    setSearch(newValue);
+  }
+
+  // pass down a reference to the function as a prop
+  return <Child search={search} onSearchChange={handleSearchChange} />;
+}
+```
+
+In our child component, we'll be able to call the callback function with
+whatever data we want to send up to the parent:
+
+```js
+function Child({ search, onSearchChange }) {
   return (
-    <div id="card1" className="card">
-      <h1>{props.greeting}</h1>
-      <p>{props.subGreeting}</p>
+    <div>
+      <p>You searched for: {search}</p>
+
+      {/* call onSearchChange and pass up some data */}
+      <input type="text" onChange={(e) => onSearchChange(e.target.value)} />
     </div>
   );
 }
-
-ReactDOM.render(
-  <div>
-    <Card greeting="Good morning!" subGreeting="Hello World!" />
-    <Card greeting="Class is in session!" subGreeting="Welcome to React!" />
-  </div>,
-  document.getElementById("root")
-);
 ```
 
-The props argument in our Card component defines an object that React will pass to our function when it is called, and it will use whatever attributes we add to our JSX component as key-value pairs on that props object.
+### Lifting State
 
-### Resources
+- [Sharing State Between Components](https://react.dev/learn/sharing-state-between-components)
 
-- [React](https://reactjs.org/)
-- [Babel](https://babeljs.io/)
-- [Creating React Apps](https://reactjs.org/docs/create-a-new-react-app.html)
-- [create-react-app](https://create-react-app.dev/docs/getting-started)
-- [Webpack](https://webpack.js.org/)
-- [Quick intro to Webpack](https://medium.com/the-self-taught-programmer/what-is-webpack-and-why-should-i-care-part-1-introduction-ca4da7d0d8dc)
+- Often, several components need to reflect the same changing data. We recommend lifting the shared state up to their closest common ancestor.
+- If two sibling components need access to the same `state`, you will want to place the shared `state` in a parent container. Then you can pass down that `state` as well as any functions that need to modify the state as props to the two sibling components that need to display and/or change that data.
