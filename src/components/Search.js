@@ -1,16 +1,16 @@
-import { useState } from "react"
-
-function Search(props){
-
-    const[pets, setPets] = useState(props.pets)
-
-    setPets(pets.filter(pet => {
-        return pet.name.toUpperCase().includes(props.searchText.toUpperCase())
-    }))
+function Search({updateSearchText}){
 
     return (
         <div className="searchbar">
-            <label htmlFor="search"></label>
+            <label htmlFor="search">Search Pets:</label>
+            <input
+                type="text"
+                id="search"
+                placeholder="Type a name to search..."
+                onChange={updateSearchText}
+            />
         </div>
     )
 }
+
+export default Search;

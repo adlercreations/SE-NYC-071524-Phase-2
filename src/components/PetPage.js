@@ -1,35 +1,34 @@
 import PetList from "./PetList";
 import pets from "../data/pets";
 import { useState } from "react";
+import Search from './Search';
+import NewPetForm from "./NewPetForm";
 
 console.log(pets)
 
 function PetPage(){
-    const [petsArray, setPetsArray] = useState(pets)
+
+    const [petsState, setPetsState] = useState(pets)
     const [searchText, setSearchText] = useState("")
 
-    const filteredPets = petsArray.filter(pet => {
+    const filteredPets = petsState.filter(pet => {
         return pet.name.toUpperCase().includes(searchText.toUpperCase())
     })
-    
-    function deletePet(id) {
-        const updatedPetsData = pets.filter(p => {
-            return p.id 
-        })
+
+    function updateSearchText(event){
+        setSearchText(event.target.value)
+    }
+
+    function deletePet(id){
+        setPetsState((petsState) => petsState.filter(pet => {
+            return pet.id !== id
+        }))
     }
 
     return (
         <main>
-            <div className="searchbar">
-                <label htmlFor="search">Search Pets:</label>
-                <input
-                    type="text"
-                    id="search"
-                    placeholder="Type a name to search..."
-                    onChange={(event) => setSearchText(event.target.value)}
-                />
-            </div>
-            <Search setSearchText= {setSearchText} />
+            <NewPetForm/>
+            <Search updateSearchText={updateSearchText}/>
             <PetList pets={filteredPets} deletePet={deletePet}/>
         </main>
     );
